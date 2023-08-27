@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import chroma from 'chroma-js';
 import './App.css';
 
-const initialGridSize = 0;
+const initialGridSize = 3;
 const defaultGridSize = initialGridSize + (Number(localStorage.getItem('level')) || 1);
 console.log('Start default grid size from root: ', defaultGridSize);
 
@@ -252,7 +252,6 @@ function App() {
           setGrid(prevGrid => {
             const newGrid = JSON.parse(JSON.stringify(prevGrid));
             newGrid[i][j] = (newGrid[i][j] + 1) % generatedColors.length;
-            console.log("newGrid", newGrid[i][j])
             updateScore(newGrid[i][j]);
             return newGrid;
           });
