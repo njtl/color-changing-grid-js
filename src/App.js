@@ -17,13 +17,14 @@ console.log('Color scale generated from root: ', colorScale);
 const generatedColors = colorScale.colors(defaultGridSize);
 console.log('Generated colors from root: ', generatedColors);
 
-const stringWin = 'You win!';
-const stringOver = 'Game Over';
+const stringWin = '(=^-ω-^=)';
+const stringOver = '(▰˘︹˘▰)';
 
 
 
 function App() {
   
+  const [gridUpdates, setGridUpdates] = useState(0);
   const getScore = Number(localStorage.getItem('score')) || 0;
   const [score, setScore] = useState(getScore >= 0 ? getScore : 0 );
   // console.log('Initial score: ', score);
@@ -79,13 +80,6 @@ function App() {
     }, []);
     //console.log('Mouse event listeners added');
 
-  useEffect(() => {
-    if (checkWinCondition(grid)) {
-      console.log('Win condition met');
-      setGameStatus(stringWin);
-    }
-  }, [grid, score]);
-  //console.log('Win condition check added');
 
   useEffect(() => {
     handleCountdown(score, countdown, gameStatus);
@@ -109,6 +103,15 @@ function App() {
     return false;
   };
 
+  useEffect(() => {
+    if (checkWinCondition(grid) && score >= 0) {
+      console.log('Win condition met');
+      setGameStatus(stringWin);
+    }
+  }, [grid, score,checkWinCondition]);
+  //console.log('Win condition check added');
+
+
   const handleClick = (i, j) => {
     console.log('Cell clicked at: ', i, j);
     if (gameStatus === stringWin || gameStatus === stringOver) return;
@@ -127,9 +130,16 @@ function App() {
   const resetGame = () => {
     // Log the game reset event
     console.log('Game reset');
+
+    if (gameStatus === stringOver) {
+      // Decrease the level by 1, but ensure it does not go below 1
+      setLevel(prevLevel => prevLevel > 1 ? prevLevel - 1 : 1);
+      // Store the new level in localStorage
+      localStorage.setItem('level', level > 1 ? level - 1 : 1);
+    }
     
     // If the next level is set
-    if (nextLevel) {
+    else if (nextLevel) {
       console.log("Next level: ", nextLevel)
 
       // Increase the level by 1
@@ -145,6 +155,7 @@ function App() {
     // Reset the game status
     setGameStatus(null);
     console.log('Game status reset');
+    setGridUpdates(0);
     const newLevel = Number(localStorage.getItem('level')) || 1;
     // Set the grid to its current state
     const newSize = defaultGridSize < initialGridSize + newLevel ? initialGridSize + newLevel : defaultGridSize;
@@ -225,6 +236,7 @@ function App() {
       }
       return newGrid;
     });
+    setGridUpdates(prevGridUpdates => prevGridUpdates + 1);
     updateSurroundingCells(i, j);
   }
 
@@ -237,15 +249,28 @@ function App() {
     }
   }
 
+  /**
+   * This function updates the colors of the cells surrounding the cell at position (i, j) in the grid.
+   * It iterates over the cells in the grid that are within a distance of 'defaultGridSize' from the cell at (i, j).
+   * For each of these cells, it increments their color by 1 (modulo the number of generated colors) 
+   * and updates the score based on the new color.
+   * The updates are performed sequentially with a delay of 10ms between each update.
+   *
+   * @param {number} i - The row index of the cell to update.
+   * @param {number} j - The column index of the cell to update.
+   */
   function updateSurroundingCells(i, j) {
     console.log('Updating surrounding cells of: ', i, j);
     const updates = [];
-    for (let k = 1; k < defaultGridSize; k++) {
+    // Generate a list of cells to update
+    for (let k = 1; k < grid.length; k++) {
       if (i - k >= 0) updates.push({ i: i - k, j });
-      if (i + k < defaultGridSize) updates.push({ i: i + k, j });
+      if (i + k < grid.length) updates.push({ i: i + k, j });
       if (j - k >= 0) updates.push({ i, j: j - k });
-      if (j + k < defaultGridSize) updates.push({ i, j: j + k });
+      if (j + k < grid.length) updates.push({ i, j: j + k });
     }
+    console.log(updates)
+    // Perform the updates sequentially with a delay of 10ms between each update
     updates.reduce((promise, { i, j }, index) => {
       return promise.then(() => new Promise(resolve => {
         setTimeout(() => {
@@ -264,9 +289,11 @@ function App() {
   return (
     <div className="App">
       <div className="score" style={{ color: score < 0 ? countdown > 6 ? 'darkorange' : 'red' : 'white' }}>{score}</div>
-      <div className="countdown">{countdown} </div>
-      <div className="gamestatus">{gameStatus} </div>
-
+      <div className="meta">
+        
+        <div className="countdown">{countdown} </div>
+        <div className="gamestatus">{gameStatus} </div>
+      </div>
       {grid.map((row, i) => (
         <div key={i} className="row">
           {row.map((cell, j) => (
@@ -299,12 +326,14 @@ function App() {
             </div>
           ))}
         </div>
-        <div className="score">
-        <div className="score">
-      <button onClick={resetGame}>{nextLevel ? 'Next > ' + level : 'Reset'}</button>
-    </div>
+        <div className="button-container">
+          <button 
+          onClick={resetGame} 
+          disabled={!(gameStatus === stringWin || gameStatus === stringOver || gridUpdates >= level)}>
+            {nextLevel ? ' ☛ ' + (Number(level) + 1) : gameStatus === stringOver ? ( Number(level) - 1 > 1 ? Number(level) - 1 : 1 ) + ' ☚  ' : '⟳'}
+          </button>
         </div>
-      </div>
+    </div>
     </div>
   );
 }
