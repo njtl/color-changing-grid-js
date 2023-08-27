@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+# Interactive Color-Changing Grid Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project requires an app to be developed using the React.js framework. The app displays an interactive 10x10 grid, with each cell initially colored white.
 
-## Available Scripts
+The app needs to utilize the `chroma-js` library to generate a color gradient scale needed for the cell colors. The color scales are defined as `['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF']`.
 
-In the project directory, you can run:
+## Requirements
 
-### `npm start`
+- Each cell of the grid should respond to a click event. Upon clicking, the selected cell's color should change. If the same cell is clicked multiple times, the cell's color should iterate through the initial color palette with each click.
+  
+- The app should also respond to the mouse being moved while the mouse button is pressed down. Any cell the mouse moves over during this action should respond as if it had been clicked, invoking a change in color.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- When a cell's color changes, only the cells found in the same row (x-axis) and the same column (y-axis) as the selected cell should gradually change color as well.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- The color change should be animated, starting from the clicked cell and moving outward to the furthest cells in the same row and column.
 
-### `npm test`
+- For color transitioning, a smooth animation effect should be applied.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- The app layout should be responsive, where the min-height and min-width span to the full viewport.
 
-### `npm run build`
+## Technical Details
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Use React.js for building the user interface. React hooks are needed to manage state and side-effects.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- The `chroma-js` library will be used to generate the color gradient scale needed for cell coloring. The color of a cell is determined by the `chroma.scale` method.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- For event handling you will need to work with React MouseEvents, specifically `onClick` and `onMouseMove`. Furthermore, listen for `mousedown` and `mouseup` events on the window object to track when the mouse button is pressed or released, respectively.
 
-### `npm run eject`
+- CSS transitions should be used for creating smooth color change animations.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Design
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Apply a minimal design approach.
+- Grid cells should have a distinguishable border.
+- The displayed grid should be centralized both vertically and horizontally.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Testing
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Functional Testing: Verify that upon clicking a cell, the color of the cell changes. Verify that when the mouse is dragged over cells, the cells respond as if clicked, meaning their color changes.
+  
+- Color Change Testing: Verify that when a cell's color changes, only the cells in the same row and column change color too.
 
-## Learn More
+- Animation Testing: Verify that color change animation creates a smooth transition.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Deliverables
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- The React.js source code of the application.
+- A working demo of the application if possible.
+- A markdown document like this one explaining the solution and how to use it.
